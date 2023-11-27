@@ -40,6 +40,8 @@ This Terraform module deploys various resources to run Atlantis on Google Comput
 
 - **Shielded VM** - A Shielded VM is a VM that's hardened by a set of security controls that help defend against rootkits and bootkits. Using a Shielded VM helps protect enterprise workloads from threats like remote attacks, privilege escalation, and malicious insiders.
 
+- **Cloud Armor** - Use Google Cloud Armor security policies to protect the default backend service from distributed denial-of-service (DDoS) and other web-based attacks. Security policies can be configured manually, with configurable match conditions and actions in a security policy. Google Cloud Armor also features preconfigured security policies, which cover a variety of use cases.
+
 - **Confidential VM** - A Confidential VM is a type of Compute Engine VM that ensures that your data and applications stay private and encrypted even while in use. You can use a Confidential VM as part of your security strategy so you do not expose sensitive data or workloads during processing. Note that Confidential VM [does not support live migration](https://cloud.google.com/confidential-computing/confidential-vm/docs/error-messages#live_migration_isnt_supported), so if this feature is enabled, `onHostMaintenance` will be set to `TERMINATE`.
 
 ## Prerequisites
@@ -59,7 +61,7 @@ Here are some examples to choose from. Look at the prerequisites above to find o
 - [Basic](https://github.com/bschaatsbergen/atlantis-on-gcp-vm/tree/master/examples/basic)
 - [Complete](https://github.com/bschaatsbergen/atlantis-on-gcp-vm/tree/master/examples/complete)
 - [Secure Environment Variables](https://github.com/bschaatsbergen/atlantis-on-gcp-vm/tree/master/examples/secure-env-vars)
-
+- [Cloud Armor](https://github.com/bschaatsbergen/atlantis-on-gcp-vm/tree/master/examples/cloud-armor)
 
 ```hcl
 module "atlantis" {

@@ -182,6 +182,12 @@ variable "labels" {
   default     = {}
 }
 
+variable "default_backend_security_policy" {
+  type        = string
+  description = "Name of the security policy to apply to the default backend service"
+  default     = null
+}
+
 variable "enable_confidential_vm" {
   type        = bool
   description = "Enable Confidential VM. If true, on host maintenance will be set to TERMINATE"
