@@ -176,8 +176,13 @@ variable "default_backend_security_policy" {
   default     = null
 }
 
+variable "enable_confidential_vm" {
+  type        = bool
+  description = "Enable Confidential VM. If true, on host maintenance will be set to TERMINATE"
+  default     = false
+}
+
 variable "shared_vpc" {
   description = "Whether the subnet used by atlantis belongs to a shared VPC or not."
   type        = bool
-  default     = false
 }
