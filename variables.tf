@@ -169,3 +169,9 @@ variable "labels" {
   description = "Key-value pairs representing labels attaching to instance & instance template"
   default     = {}
 }
+
+variable "enable_confidential_vm" {
+  type        = bool
+  description = "Enable Confidential VM. If true, on host maintenance will be set to TERMINATE"
+  default     = false
+}
