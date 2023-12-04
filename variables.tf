@@ -195,6 +195,13 @@ variable "enable_confidential_vm" {
 }
 
 variable "shared_vpc" {
-  description = "Whether the subnet used by atlantis belongs to a shared VPC or not."
+  description = "Whether the subnet used by atlantis belongs to a shared VPC or not"
   type        = bool
+  default     = false
+}
+
+variable "subnetwork_project" {
+  description = "The project ID of the project that owns the subnetwork. Defaults to the provided project_id variable"
+  type        = string
+  default     = null
 }
