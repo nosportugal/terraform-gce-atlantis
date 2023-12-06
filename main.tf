@@ -194,7 +194,7 @@ resource "google_compute_instance_template" "default" {
 
   network_interface {
     subnetwork         = var.subnetwork
-    subnetwork_project = coalesce(var.subnetwork_project, var.project)
+    subnetwork_project = try(var.shared_vpc.host_project_id, var.project)
   }
 
   shielded_instance_config {
