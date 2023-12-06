@@ -14,11 +14,11 @@ This module expects that you already own or create the below resources yourself.
 - Service account, [specifics can be found here](../../README.md#service-account)
 - Domain, [specifics can be found here](../../README.md#dns-record)
 - The following firewall rules configured in the host network:
-  - Allow IAP access
+  - Allow IAP access (<https://cloud.google.com/iap/docs/using-tcp-forwarding#create-firewall-rule>)
     - source ip ranges: `[35.235.240.0/20]`
     - target tags: `[allow-iap]`
-    - tcp:22
-  - Allow load balancer healthchecks
+    - tcp, port 22
+  - Allow load balancer healthchecks: (<https://cloud.google.com/load-balancing/docs/health-checks#fw-rule>)
     - source ip ranges: `[130.211.0.0/22, 35.191.0.0/16]`
     - target tags `[allow-lb-health-checks]`
     - tcp
