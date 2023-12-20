@@ -309,12 +309,12 @@ resource "google_compute_autoscaler" "default" {
     dynamic "scaling_schedules" {
       for_each = var.schedules
       content {
-        name                  = scaling_schedules.name
-        description           = scaling_schedules.description
+        name                  = scaling_schedules.value.name
+        description           = scaling_schedules.value.description
         min_required_replicas = 1
-        schedule              = scaling_schedules.schedule
-        time_zone             = scaling_schedules.time_zone
-        duration_sec          = scaling_schedules.duration_sec
+        schedule              = scaling_schedules.value.schedule
+        time_zone             = scaling_schedules.value.time_zone
+        duration_sec          = scaling_schedules.value.duration_sec
       }
     }
   }
