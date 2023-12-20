@@ -277,7 +277,8 @@ resource "google_compute_instance_group_manager" "default" {
     initial_delay_sec = 30
   }
 
-  target_size = 1
+  # We cannot set target_size when using an autoscaler
+  target_size = var.schedules == null ? 1 : 0
 
   update_policy {
     type                           = "PROACTIVE"
@@ -289,6 +290,32 @@ resource "google_compute_instance_group_manager" "default" {
   }
   project  = var.project
   provider = google-beta
+}
+
+resource "google_compute_autoscaler" "default" {
+  count = var.schedules == null ? 0 : 1
+
+  name   = var.name
+  zone   = var.zone
+  target = google_compute_instance_group_manager.default.id
+
+  autoscaling_policy {
+    max_replicas    = 1 # Allow at most one instance
+    min_replicas    = 0 # Allow scaling down to zero instances
+    cooldown_period = 60
+
+    dynamic "scaling_schedules" {
+      for_each = var.schedules
+      content {
+        name                  = scaling_schedules.name
+        description           = scaling_schedules.description
+        min_required_replicas = 1
+        schedule              = scaling_schedules.schedule
+        time_zone             = scaling_schedules.time_zone
+        duration_sec          = scaling_schedules.duration_sec
+      }
+    }
+  }
 }
 
 resource "google_compute_global_address" "default" {
