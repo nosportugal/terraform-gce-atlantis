@@ -313,7 +313,7 @@ resource "google_compute_autoscaler" "default" {
       content {
         name                  = scaling_schedules.value.name
         description           = scaling_schedules.value.description
-        min_required_replicas = 1
+        min_required_replicas = scaling_schedules.value.min_required_replicas
         schedule              = scaling_schedules.value.schedule
         time_zone             = scaling_schedules.value.time_zone
         duration_sec          = scaling_schedules.value.duration_sec
