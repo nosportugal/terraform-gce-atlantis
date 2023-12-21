@@ -108,6 +108,23 @@ variable "shielded_instance_config" {
   }
 }
 
+variable "schedules" {
+  description = "Only deploy instances during certain time windows. Schedule follows the extended cron format, and time_zone must be a time zone name from the tz database"
+  type = list(object({
+    name                  = string
+    description           = string
+    min_required_replicas = number
+    schedule              = string
+    time_zone             = string
+    duration_sec          = number
+  }))
+  default = null
+  validation {
+    condition     = alltrue([for s in var.schedules : s.min_required_replicas == 0 || s.min_required_replicas == 1])
+    error_message = "min_required_replicas must be exactly 0 or 1"
+  }
+}
+
 variable "domain" {
   type        = string
   description = "Domain to associate Atlantis with and to request a managed SSL certificate for. Without `https://`"
