@@ -282,7 +282,7 @@ resource "google_compute_instance_group_manager" "default" {
   }
 
   # We cannot set target_size when using an autoscaler
-  target_size = var.schedules == null ? 1 : null
+  target_size = var.autoscaling == null ? 1 : null
 
   update_policy {
     type                           = "PROACTIVE"
@@ -297,7 +297,8 @@ resource "google_compute_instance_group_manager" "default" {
 }
 
 resource "google_compute_autoscaler" "default" {
-  count = var.schedules == null ? 0 : 1
+  count    = var.autoscaling == null ? 0 : 1
+  provider = google-beta
 
   name   = var.name
   zone   = var.zone
@@ -309,16 +310,42 @@ resource "google_compute_autoscaler" "default" {
     cooldown_period = 60
 
     dynamic "scaling_schedules" {
-      for_each = var.schedules
+      for_each = var.autoscaling.schedules
       content {
         name                  = scaling_schedules.value.name
         description           = scaling_schedules.value.description
-        min_required_replicas = scaling_schedules.value.min_required_replicas
+        min_required_replicas = 1
         schedule              = scaling_schedules.value.schedule
         time_zone             = scaling_schedules.value.time_zone
         duration_sec          = scaling_schedules.value.duration_sec
       }
     }
+
+    dynamic "metric" {
+      for_each = var.autoscaling.scale_up_on_demand ? [
+        # You can only use the AND operator for joining selectors. You can only use direct equality comparison operator (=) without any functions for each selector.
+        # Metric types must be unique within the scaling configuration.
+        {
+          # Keep instance up when used
+          name   = "loadbalancing.googleapis.com/https/request_bytes_count"
+          filter = "metric.labels.response_code_class = \"200\" AND resource.type = \"https_lb_rule\" AND resource.labels.project_id = \"${var.project}\" AND resource.labels.forwarding_rule_name = \"${var.name}\""
+          target = 1
+        },
+        {
+          # Scale up when needed
+          name   = "loadbalancing.googleapis.com/https/request_count"
+          filter = "metric.labels.response_code = \"503\" AND resource.type = \"https_lb_rule\" AND resource.labels.project_id = \"${var.project}\" resource.labels.forwarding_rule_name = \"${var.name}\""
+          target = 0.001
+        }
+      ] : []
+      content {
+        name   = metric.value.name
+        target = metric.value.target
+        type   = "DELTA_PER_SECOND"
+        filter = metric.value.filter
+      }
+    }
+
   }
 }
 
