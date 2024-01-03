@@ -282,7 +282,7 @@ resource "google_compute_instance_group_manager" "default" {
   }
 
   # We cannot set target_size when using an autoscaler
-  target_size = var.schedules == null ? 1 : null
+  target_size = var.autoscaling == null ? 1 : null
 
   update_policy {
     type                           = "PROACTIVE"
@@ -297,7 +297,7 @@ resource "google_compute_instance_group_manager" "default" {
 }
 
 resource "google_compute_autoscaler" "default" {
-  count = var.schedules == null ? 0 : 1
+  count = var.autoscaling == null ? 0 : 1
 
   name   = var.name
   zone   = var.zone
@@ -309,11 +309,11 @@ resource "google_compute_autoscaler" "default" {
     cooldown_period = 60
 
     dynamic "scaling_schedules" {
-      for_each = var.schedules
+      for_each = var.autoscaling.schedules == null ? [] : var.autoscaling.schedules
       content {
         name                  = scaling_schedules.value.name
         description           = scaling_schedules.value.description
-        min_required_replicas = scaling_schedules.value.min_required_replicas
+        min_required_replicas = 1
         schedule              = scaling_schedules.value.schedule
         time_zone             = scaling_schedules.value.time_zone
         duration_sec          = scaling_schedules.value.duration_sec
