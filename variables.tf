@@ -214,6 +214,13 @@ variable "enable_confidential_vm" {
   default     = false
 }
 
+variable "enable_autoupdate" {
+  type        = bool
+  description = "Enable automatic updates for the OS and installed packages | https://cloud.google.com/container-optimized-os/docs/concepts/auto-update#disable_automatic_updates"
+  default     = null # use a null value to not set the metadata key
+}
+
+
 variable "shared_vpc" {
   description = "Whether to deploy within a shared VPC"
   type = object({
