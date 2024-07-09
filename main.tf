@@ -119,6 +119,12 @@ module "container" {
   restart_policy = "Always"
 }
 
+locals {
+
+  # in order to not add unecessary stuff to past deployments cos-update-strategy should not be set if enable_autoupdate is null, which is the default value
+  update_strategy_metadata = var.enable_autoupdate == null ? {} : { cos-update-strategy = var.enable_autoupdate ? "update_enabled" : "update_disabled" }
+}
+
 resource "google_compute_instance_template" "default" {
   name_prefix             = "${var.name}-"
   description             = "This template is used to create VMs that run Atlantis in a containerized environment using Docker"
@@ -128,7 +134,7 @@ resource "google_compute_instance_template" "default" {
   can_ip_forward          = false
   metadata_startup_script = var.startup_script
 
-  metadata = {
+  metadata = merge({
     gce-container-declaration    = module.container.metadata_value
     user-data                    = data.cloudinit_config.config.rendered
     google-logging-enabled       = var.google_monitoring_enabled
@@ -136,7 +142,8 @@ resource "google_compute_instance_template" "default" {
     google-logging-use-fluentbit = var.google_logging_use_fluentbit
     block-project-ssh-keys       = var.block_project_ssh_keys_enabled
     enable-oslogin               = var.enable_oslogin
-  }
+  }, local.update_strategy_metadata)
+
 
   # Using the below scheduling configuration,
   # the managed instance group will recreate the Spot VM if Compute Engine stops them
