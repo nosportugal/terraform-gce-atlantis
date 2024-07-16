@@ -66,7 +66,7 @@ module "atlantis" {
       },
     ]
   }
-  
+
   domain  = local.domain
   project = local.project_id
 }
