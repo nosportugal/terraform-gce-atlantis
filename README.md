@@ -186,7 +186,6 @@ This error indicates that the Google Cloud Managed SSL certificate is not yet fu
 If all configurations are correct, it may take up to 25 minutes for the certificate to be provisioned.
 You can check the status of the certificate in the Google Cloud Console.
 
-
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
@@ -218,8 +217,10 @@ You can check the status of the certificate in the Google Cloud Console.
 | Name | Type |
 |------|------|
 | [google-beta_google_compute_instance_group_manager.default](https://registry.terraform.io/providers/hashicorp/google-beta/latest/docs/resources/google_compute_instance_group_manager) | resource |
+| [google_compute_autoscaler.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_autoscaler) | resource |
 | [google_compute_backend_service.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_backend_service) | resource |
 | [google_compute_backend_service.iap](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_backend_service) | resource |
+| [google_compute_disk.persistent](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk) | resource |
 | [google_compute_firewall.lb_health_check](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) | resource |
 | [google_compute_global_address.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) | resource |
 | [google_compute_global_forwarding_rule.https](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) | resource |
@@ -239,10 +240,14 @@ You can check the status of the certificate in the Google Cloud Console.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_args"></a> [args](#input\_args) | Arguments to override the container image default command (CMD). | `list(string)` | `null` | no |
+| <a name="input_autoscaling"></a> [autoscaling](#input\_autoscaling) | Allow the instance group to scale down to zero based on signals | <pre>object({<br>    schedules = list(object({<br>      name         = string<br>      description  = string<br>      schedule     = string<br>      time_zone    = string<br>      duration_sec = number<br>    }))<br>  })</pre> | `null` | no |
 | <a name="input_block_project_ssh_keys_enabled"></a> [block\_project\_ssh\_keys\_enabled](#input\_block\_project\_ssh\_keys\_enabled) | Blocks the use of project-wide publich SSH keys | `bool` | `false` | no |
+| <a name="input_command"></a> [command](#input\_command) | Command to override the container image ENTRYPOINT | `list(string)` | `null` | no |
 | <a name="input_default_backend_security_policy"></a> [default\_backend\_security\_policy](#input\_default\_backend\_security\_policy) | Name of the security policy to apply to the default backend service | `string` | `null` | no |
 | <a name="input_disk_kms_key_self_link"></a> [disk\_kms\_key\_self\_link](#input\_disk\_kms\_key\_self\_link) | The self link of the encryption key that is stored in Google Cloud KMS | `string` | `null` | no |
 | <a name="input_domain"></a> [domain](#input\_domain) | Domain to associate Atlantis with and to request a managed SSL certificate for. Without `https://` | `string` | n/a | yes |
+| <a name="input_enable_autoupdate"></a> [enable\_autoupdate](#input\_enable\_autoupdate) | Enable automatic updates for the OS and installed packages \| https://cloud.google.com/container-optimized-os/docs/concepts/auto-update#disable_automatic_updates | `bool` | `null` | no |
 | <a name="input_enable_confidential_vm"></a> [enable\_confidential\_vm](#input\_enable\_confidential\_vm) | Enable Confidential VM. If true, on host maintenance will be set to TERMINATE | `bool` | `false` | no |
 | <a name="input_enable_oslogin"></a> [enable\_oslogin](#input\_enable\_oslogin) | Enables OS Login service on the VM | `bool` | `false` | no |
 | <a name="input_env_vars"></a> [env\_vars](#input\_env\_vars) | Key-value pairs representing environment variables and their respective values | `map(any)` | n/a | yes |
