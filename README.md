@@ -1,29 +1,36 @@
 # Atlantis on Google Compute Engine
 
+![Header](./static/banner.png)
+
 This Terraform module deploys various resources to run Atlantis on Google Compute Engine.
 
-- [Feature highlights](#feature-highlights)
-- [Prerequisites](#prerequisites)
-- [Example Usage](#example-usage)
-  - [Basic](examples/basic)
-  - [Complete](examples/complete)
-  - [Cloud Armor](examples/cloud-armor)
-  - [Secured Environment Variables](examples/secure-env-vars)
-- [How to deploy](#how-to-deploy)
-  - [Important](#important)
-  - [After it's successfully deployed](#after-its-successfully-deployed)
-- [Configuring Atlantis](#configuring-atlantis)
-  - [Setting sensitive environment variables](#setting-sensitive-environment-variables)
-- [Service Account](#service-account)
-  - [Permissions](#permissions)
-- [DNS Record](#dns-record)
-  - [Example](#example)
-- [Identity-Aware Proxy](#identity-aware-proxy)
-  - [Enabling IAP](#enabling-iap)
-  - [What's exactly protected?](#whats-exactly-protected)
-  - [Permissions](#permissions)
-- [FAQ](#faq)
-- [Requirements](#requirements)
+- [Atlantis on Google Compute Engine](#atlantis-on-google-compute-engine)
+  - [Feature highlights](#feature-highlights)
+  - [Prerequisites](#prerequisites)
+  - [Example Usage](#example-usage)
+  - [How to deploy](#how-to-deploy)
+    - [Important](#important)
+    - [After it's successfully deployed](#after-its-successfully-deployed)
+  - [Configuring Atlantis](#configuring-atlantis)
+    - [Setting sensitive environment variables](#setting-sensitive-environment-variables)
+  - [Service Account](#service-account)
+    - [Permissions](#permissions)
+  - [DNS Record](#dns-record)
+    - [Example](#example)
+  - [Identity-Aware Proxy](#identity-aware-proxy)
+    - [Enabling IAP](#enabling-iap)
+    - [What's exactly protected?](#whats-exactly-protected)
+    - [Permissions](#permissions-1)
+  - [FAQ](#faq)
+    - [When sending an HTTP request, I'm receiving an ERR\_EMPTY\_RESPONSE error](#when-sending-an-http-request-im-receiving-an-err_empty_response-error)
+    - [My VM experienced an outage and is taking some time to restart](#my-vm-experienced-an-outage-and-is-taking-some-time-to-restart)
+    - [Even though terraform apply worked correctly, I'm receiving an ERR\_SSL\_VERSION\_OR\_CIPHER\_MISMATCH error](#even-though-terraform-apply-worked-correctly-im-receiving-an-err_ssl_version_or_cipher_mismatch-error)
+  - [Requirements](#requirements)
+  - [Providers](#providers)
+  - [Modules](#modules)
+  - [Resources](#resources)
+  - [Inputs](#inputs)
+  - [Outputs](#outputs)
 
 ## Feature highlights
 
@@ -55,29 +62,28 @@ This module expects that you already own or create the below resources yourself.
 - Service account
 - Domain
 
-If you prefer an example that includes the above resources, see [`complete example`](https://github.com/bschaatsbergen/atlantis-on-gcp-vm/tree/master/examples/complete).
+If you prefer an example that includes the above resources, see [`complete example`](https://github.com/runatlantis/terraform-gce-atlantis/tree/master/examples/complete).
 
 ## Example Usage
 
 Here are some examples to choose from. Look at the prerequisites above to find one that is appropriate for your configuration.
 
-- [Basic](https://github.com/bschaatsbergen/atlantis-on-gcp-vm/tree/master/examples/basic)
-- [Complete](https://github.com/bschaatsbergen/atlantis-on-gcp-vm/tree/master/examples/complete)
-- [Secure Environment Variables](https://github.com/bschaatsbergen/atlantis-on-gcp-vm/tree/master/examples/secure-env-vars)
-- [Cloud Armor](https://github.com/bschaatsbergen/atlantis-on-gcp-vm/tree/master/examples/cloud-armor)
-- [Shared VPC](https://github.com/bschaatsbergen/atlantis-on-gcp-vm/tree/master/examples/shared-vpc)
+- [Basic](https://github.com/runatlantis/terraform-gce-atlantis/tree/master/examples/basic)
+- [Complete](https://github.com/runatlantis/terraform-gce-atlantis/tree/master/examples/complete)
+- [Secure Environment Variables](https://github.com/runatlantis/terraform-gce-atlantis/tree/master/examples/secure-env-vars)
+- [Cloud Armor](https://github.com/runatlantis/terraform-gce-atlantis/tree/master/examples/cloud-armor)
+- [Shared VPC](https://github.com/runatlantis/terraform-gce-atlantis/tree/master/examples/shared-vpc)
 
 ```hcl
 module "atlantis" {
-  source  = "bschaatsbergen/atlantis/gce"
-  version = "1.3.1"
+  source  = "runatlantis/atlantis/gce"
   # insert the 7 required variables here
 }
 ```
 
 ## How to deploy
 
-See [`main.tf`](https://github.com/bschaatsbergen/atlantis-on-gcp-vm/tree/master/examples/basic/main.tf) and the [`server-atlantis.yaml`](https://github.com/bschaatsbergen/atlantis-on-gcp-vm/tree/master/examples/basic/server-atlantis.yaml).
+See [`main.tf`](https://github.com/runatlantis/terraform-gce-atlantis/tree/master/examples/basic/main.tf) and the [`server-atlantis.yaml`](https://github.com/runatlantis/terraform-gce-atlantis/tree/master/examples/basic/server-atlantis.yaml).
 
 ### Important
 
@@ -105,7 +111,7 @@ For an overview of all possible environment variables, see: [Atlantis Server Con
 
 ### Setting sensitive environment variables
 
-See [secured environment variables](https://github.com/bschaatsbergen/atlantis-on-gcp-vm/tree/master/examples/secure-env-vars) for an example on how to deal with sensitive values in environment variables.
+See [secured environment variables](https://github.com/runatlantis/terraform-gce-atlantis/tree/master/examples/secure-env-vars) for an example on how to deal with sensitive values in environment variables.
 
 ## Service Account
 
@@ -117,7 +123,7 @@ Note that you must grant the relevant permissions to your service account yourse
 
 The `roles/logging.logWriter` & `roles/monitoring.metricWriter` roles should be attached to the service account in order to write logs to Cloud Logging and ingest metric data into Cloud Monitoring.
 
-See [`main.tf`](https://github.com/bschaatsbergen/terraform-gce-atlantis/blob/main/examples/basic/main.tf#L16-L33)
+See [`main.tf`](https://github.com/runatlantis/terraform-gce-atlantis/blob/main/examples/basic/main.tf#L16-L33)
 
 ## DNS Record
 
@@ -129,7 +135,7 @@ It's a requirement to add the A record to the domain record set in order to suce
 
 If you use Cloud DNS and own a managed zone for your domain, use the IP address that's part of the module output to create the A record.
 
-See [`main.tf`](https://github.com/bschaatsbergen/terraform-gce-atlantis/blob/main/examples/basic/main.tf#L60-L71)
+See [`main.tf`](https://github.com/runatlantis/terraform-gce-atlantis/blob/main/examples/basic/main.tf#L60-L71)
 
 ## Identity-Aware Proxy
 
@@ -180,7 +186,7 @@ This error indicates that the Google Cloud Managed SSL certificate is not yet fu
 If all configurations are correct, it may take up to 25 minutes for the certificate to be provisioned.
 You can check the status of the certificate in the Google Cloud Console.
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -204,15 +210,17 @@ You can check the status of the certificate in the Google Cloud Console.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_container"></a> [container](#module\_container) | terraform-google-modules/container-vm/google | 3.1.0 |
+| <a name="module_container"></a> [container](#module\_container) | terraform-google-modules/container-vm/google | 3.1.1 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
 | [google-beta_google_compute_instance_group_manager.default](https://registry.terraform.io/providers/hashicorp/google-beta/latest/docs/resources/google_compute_instance_group_manager) | resource |
+| [google_compute_autoscaler.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_autoscaler) | resource |
 | [google_compute_backend_service.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_backend_service) | resource |
 | [google_compute_backend_service.iap](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_backend_service) | resource |
+| [google_compute_disk.persistent](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_disk) | resource |
 | [google_compute_firewall.lb_health_check](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall) | resource |
 | [google_compute_global_address.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) | resource |
 | [google_compute_global_forwarding_rule.https](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) | resource |
@@ -232,10 +240,15 @@ You can check the status of the certificate in the Google Cloud Console.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_args"></a> [args](#input\_args) | Arguments to override the container image default command (CMD). | `list(string)` | `null` | no |
+| <a name="input_autoscaling"></a> [autoscaling](#input\_autoscaling) | Allow the instance group to scale down to zero based on signals | <pre>object({<br>    schedules = list(object({<br>      name         = string<br>      description  = string<br>      schedule     = string<br>      time_zone    = string<br>      duration_sec = number<br>    }))<br>  })</pre> | `null` | no |
 | <a name="input_block_project_ssh_keys_enabled"></a> [block\_project\_ssh\_keys\_enabled](#input\_block\_project\_ssh\_keys\_enabled) | Blocks the use of project-wide publich SSH keys | `bool` | `false` | no |
+| <a name="input_command"></a> [command](#input\_command) | Command to override the container image ENTRYPOINT | `list(string)` | `null` | no |
 | <a name="input_default_backend_security_policy"></a> [default\_backend\_security\_policy](#input\_default\_backend\_security\_policy) | Name of the security policy to apply to the default backend service | `string` | `null` | no |
 | <a name="input_disk_kms_key_self_link"></a> [disk\_kms\_key\_self\_link](#input\_disk\_kms\_key\_self\_link) | The self link of the encryption key that is stored in Google Cloud KMS | `string` | `null` | no |
 | <a name="input_domain"></a> [domain](#input\_domain) | Domain to associate Atlantis with and to request a managed SSL certificate for. Without `https://` | `string` | n/a | yes |
+| <a name="input_enable_autoupdate"></a> [enable\_autoupdate](#input\_enable\_autoupdate) | Enable automatic updates for the OS and installed packages \| https://cloud.google.com/container-optimized-os/docs/concepts/auto-update#disable_automatic_updates | `bool` | `null` | no |
+| <a name="input_enable_confidential_vm"></a> [enable\_confidential\_vm](#input\_enable\_confidential\_vm) | Enable Confidential VM. If true, on host maintenance will be set to TERMINATE | `bool` | `false` | no |
 | <a name="input_enable_oslogin"></a> [enable\_oslogin](#input\_enable\_oslogin) | Enables OS Login service on the VM | `bool` | `false` | no |
 | <a name="input_env_vars"></a> [env\_vars](#input\_env\_vars) | Key-value pairs representing environment variables and their respective values | `map(any)` | n/a | yes |
 | <a name="input_expose_metrics_publicly"></a> [expose\_metrics\_publicly](#input\_expose\_metrics\_publicly) | Exposes the /metrics endpoint publicly even if Atlantis is protected by IAP | `bool` | `false` | no |
@@ -254,6 +267,7 @@ You can check the status of the certificate in the Google Cloud Console.
 | <a name="input_project"></a> [project](#input\_project) | The ID of the project in which the resource belongs | `string` | `null` | no |
 | <a name="input_region"></a> [region](#input\_region) | The region that resources should be created in | `string` | n/a | yes |
 | <a name="input_service_account"></a> [service\_account](#input\_service\_account) | Service account to attach to the instance running Atlantis | <pre>object({<br>    email  = string,<br>    scopes = list(string)<br>  })</pre> | <pre>{<br>  "email": "",<br>  "scopes": [<br>    "cloud-platform"<br>  ]<br>}</pre> | no |
+| <a name="input_shared_vpc"></a> [shared\_vpc](#input\_shared\_vpc) | Whether to deploy within a shared VPC | <pre>object({<br>    host_project_id = string<br>  })</pre> | `null` | no |
 | <a name="input_shielded_instance_config"></a> [shielded\_instance\_config](#input\_shielded\_instance\_config) | Shielded VM provides verifiable integrity to prevent against malware and rootkits | <pre>object({<br>    enable_integrity_monitoring = optional(bool)<br>    enable_vtpm                 = optional(bool)<br>    enable_secure_boot          = optional(bool)<br>  })</pre> | <pre>{<br>  "enable_integrity_monitoring": true,<br>  "enable_secure_boot": true,<br>  "enable_vtpm": true<br>}</pre> | no |
 | <a name="input_spot_machine_enabled"></a> [spot\_machine\_enabled](#input\_spot\_machine\_enabled) | A Spot VM is discounted Compute Engine capacity that may be preemptively stopped or deleted by Compute Engine if the capacity is needed | `bool` | `false` | no |
 | <a name="input_ssl_policy"></a> [ssl\_policy](#input\_ssl\_policy) | The SSL policy name that the certificate must follow | `string` | `null` | no |
@@ -271,4 +285,4 @@ You can check the status of the certificate in the Google Cloud Console.
 | <a name="output_ip_address"></a> [ip\_address](#output\_ip\_address) | The IPv4 address of the load balancer |
 | <a name="output_managed_ssl_certificate_certificate_id"></a> [managed\_ssl\_certificate\_certificate\_id](#output\_managed\_ssl\_certificate\_certificate\_id) | The unique identifier of the Google Managed SSL certificate |
 | <a name="output_managed_ssl_certificate_expire_time"></a> [managed\_ssl\_certificate\_expire\_time](#output\_managed\_ssl\_certificate\_expire\_time) | Expire time of the Google Managed SSL certificate |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->

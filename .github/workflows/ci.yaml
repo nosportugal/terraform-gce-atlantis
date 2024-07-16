@@ -1,0 +1,68 @@
+name: ci
+on:
+  - pull_request
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the repository.
+      contents: write
+
+    steps:
+      # Setup dependencies
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      # Run a couple of native Terraform checks
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform init
+      - run: terraform fmt -recursive -check
+      - run: terraform validate
+
+      # Checkov
+      - uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: .
+          quiet: true
+          skip_check: CKV_TF_1,CKV_GCP_32,CKV_GCP_34,CKV2_GCP_18,CKV_TF_2
+          framework: terraform
+
+      # Terraform-docs
+      - uses: terraform-docs/gh-actions@v1.1.0
+        id: terraform-docs
+        with:
+          working-dir: .
+          output-file: README.md
+          output-method: inject
+          fail-on-diff: true
+          args: --lockfile=false
+          git-push: 'false'
+
+      # Push Terraform-docs changes
+      - uses: planetscale/ghcommit-action@v0.1.38
+        # Run this step even if previous steps fails (there are changes to commit)
+        # but skip when on forks
+        if: ${{ !cancelled() && github.repository_owner == 'runatlantis' }}
+        with:
+          commit_message: "terraform-docs: automated action"
+          repo: ${{ github.repository }}
+          branch: ${{ github.head_ref || github.ref_name }}
+          file_pattern: 'README.md'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Print instructions to run terraform-docs locally if changes are needed and workflow is running on fork
+      - if: ${{ !cancelled() && github.repository_owner != 'runatlantis' && steps.terraform-docs.outputs.num_changed > 0 }}
+        run: |
+          echo '### Please run terraform-docs locally and commit the changes:' >> $GITHUB_STEP_SUMMARY
+          echo '' >> $GITHUB_STEP_SUMMARY
+          echo '```sh' >> $GITHUB_STEP_SUMMARY
+          echo 'docker run --rm --volume "$(pwd):/terraform-docs" -u $(id -u) quay.io/terraform-docs/terraform-docs:0.17.0 markdown --output-file README.md --output-mode inject /terraform-docs' >> $GITHUB_STEP_SUMMARY
+          echo 'git add README.md' >> $GITHUB_STEP_SUMMARY
+          echo 'git commit --amend --no-edit' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo '' >> $GITHUB_STEP_SUMMARY

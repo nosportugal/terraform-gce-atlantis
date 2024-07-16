@@ -220,7 +220,6 @@ variable "enable_autoupdate" {
   default     = null # use a null value to not set the metadata key
 }
 
-
 variable "shared_vpc" {
   description = "Whether to deploy within a shared VPC"
   type = object({
