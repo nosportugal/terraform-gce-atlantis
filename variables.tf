@@ -120,6 +120,10 @@ variable "autoscaling" {
     }))
   })
   default = null
+  validation {
+    condition     = var.schedules != null ? length(var.schedules) > 0 : true
+    error_message = "If this variable is defined, at least one schedule must be provided"
+  }
 }
 
 variable "domain" {
