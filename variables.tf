@@ -141,6 +141,7 @@ variable "enable_oslogin" {
 
 variable "iap" {
   type = object({
+    enabled              = bool
     oauth2_client_id     = string
     oauth2_client_secret = string
   })

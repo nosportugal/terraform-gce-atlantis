@@ -79,7 +79,7 @@ data "cloudinit_config" "config" {
 
 module "container" {
   source  = "terraform-google-modules/container-vm/google"
-  version = "3.1.1"
+  version = "3.2.0"
 
   container = {
     image = var.image
@@ -382,6 +382,7 @@ resource "google_compute_backend_service" "iap" {
   }
 
   iap {
+    enabled              = var.iap.enabled
     oauth2_client_id     = var.iap.oauth2_client_id
     oauth2_client_secret = var.iap.oauth2_client_secret
   }
