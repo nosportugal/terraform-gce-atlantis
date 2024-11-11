@@ -1,4 +1,5 @@
 locals {
+
   # The default port that Atlantis runs on is 4141, we default to this.
   atlantis_port = lookup(var.env_vars, "ATLANTIS_PORT", 4141)
   # Atlantis' home directory is "/home/atlantis", we default to this.
@@ -79,7 +80,7 @@ data "cloudinit_config" "config" {
 
 module "container" {
   source  = "terraform-google-modules/container-vm/google"
-  version = "3.2.0"
+  version = "~> 3.2"
 
   container = {
     image = var.image
@@ -218,7 +219,7 @@ resource "google_compute_instance_template" "default" {
 
 resource "google_compute_disk" "persistent" {
   name = var.name
-  type = "pd-ssd"
+  type = var.persistent_disk_type
   size = var.persistent_disk_size_gb
   zone = var.zone
   labels = merge(
@@ -382,7 +383,7 @@ resource "google_compute_backend_service" "iap" {
   }
 
   iap {
-    enabled              = var.iap.enabled
+    enabled              = true
     oauth2_client_id     = var.iap.oauth2_client_id
     oauth2_client_secret = var.iap.oauth2_client_secret
   }

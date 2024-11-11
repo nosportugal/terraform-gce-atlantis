@@ -141,7 +141,6 @@ variable "enable_oslogin" {
 
 variable "iap" {
   type = object({
-    enabled              = bool
     oauth2_client_id     = string
     oauth2_client_secret = string
   })
@@ -233,4 +232,10 @@ variable "shared_vpc" {
     host_project_id = string
   })
   default = null
+}
+
+variable "persistent_disk_type" {
+  type        = string
+  description = "The type of persistent disk that Atlantis uses to store its data on"
+  default     = "pd-ssd"
 }
