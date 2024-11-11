@@ -193,7 +193,7 @@ You can check the status of the certificate in the Google Cloud Console.
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.0 |
 | <a name="requirement_cloudinit"></a> [cloudinit](#requirement\_cloudinit) | >=2.2.0 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | >=4.79.0 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | >=6.9.0 |
 | <a name="requirement_google-beta"></a> [google-beta](#requirement\_google-beta) | >=4.79.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >=3.4.3 |
 
@@ -201,16 +201,16 @@ You can check the status of the certificate in the Google Cloud Console.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_cloudinit"></a> [cloudinit](#provider\_cloudinit) | >=2.2.0 |
-| <a name="provider_google"></a> [google](#provider\_google) | >=4.79.0 |
-| <a name="provider_google-beta"></a> [google-beta](#provider\_google-beta) | >=4.79.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | >=3.4.3 |
+| <a name="provider_cloudinit"></a> [cloudinit](#provider\_cloudinit) | 2.3.4 |
+| <a name="provider_google"></a> [google](#provider\_google) | 5.38.0 |
+| <a name="provider_google-beta"></a> [google-beta](#provider\_google-beta) | 5.38.0 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.6.2 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_container"></a> [container](#module\_container) | terraform-google-modules/container-vm/google | 3.1.1 |
+| <a name="module_container"></a> [container](#module\_container) | terraform-google-modules/container-vm/google | ~> 3.2 |
 
 ## Resources
 
@@ -265,6 +265,7 @@ You can check the status of the certificate in the Google Cloud Console.
 | <a name="input_name"></a> [name](#input\_name) | Custom name that's used during resource creation | `string` | n/a | yes |
 | <a name="input_network"></a> [network](#input\_network) | Name of the network | `string` | n/a | yes |
 | <a name="input_persistent_disk_size_gb"></a> [persistent\_disk\_size\_gb](#input\_persistent\_disk\_size\_gb) | The size of the persistent disk that Atlantis uses to store its data on | `number` | `50` | no |
+| <a name="input_persistent_disk_type"></a> [persistent\_disk\_type](#input\_persistent\_disk\_type) | The type of persistent disk that Atlantis uses to store its data on | `string` | `"pd-ssd"` | no |
 | <a name="input_project"></a> [project](#input\_project) | The ID of the project in which the resource belongs | `string` | `null` | no |
 | <a name="input_region"></a> [region](#input\_region) | The region that resources should be created in | `string` | n/a | yes |
 | <a name="input_service_account"></a> [service\_account](#input\_service\_account) | Service account to attach to the instance running Atlantis | <pre>object({<br>    email  = string,<br>    scopes = list(string)<br>  })</pre> | <pre>{<br>  "email": "",<br>  "scopes": [<br>    "cloud-platform"<br>  ]<br>}</pre> | no |
