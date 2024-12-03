@@ -4,7 +4,7 @@ output "ip_address" {
 }
 
 output "cos_image_id" {
-  value       = data.google_compute_image.cos.image_id
+  value       = var.machine_image == null ? data.google_compute_image.cos[0].image_id : element(split("/", var.machine_image), length(split("/", var.machine_image)) - 1)
   description = "The unique identifier of the Container-Optimized OS image used to create the Compute Engine instance."
 }
 
