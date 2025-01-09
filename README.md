@@ -1,6 +1,7 @@
 # Atlantis on Google Compute Engine
 
 ![Header](./static/banner.png)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Frunatlantis%2Fterraform-gce-atlantis.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Frunatlantis%2Fterraform-gce-atlantis?ref=badge_shield)
 
 This Terraform module deploys various resources to run Atlantis on Google Compute Engine.
 
@@ -90,6 +91,7 @@ See [`main.tf`](https://github.com/runatlantis/terraform-gce-atlantis/tree/maste
 - Provisioning the Google Cloud Managed SSL certificate can take up to 25 minutes after the `terraform apply` has finished.
 
 - If you bring your own Docker image (*not using any Atlantis image as base image*), be sure to create an Atlantis user using a uid (user ID) of 100.
+- As per Docker spec, the base image's `CMD` will be overridden when you define a new `ENTRYPOINT` through the `command` variable: <https://docs.docker.com/engine/reference/builder/#understand-how-cmd-and-entrypoint-interact>
 
 ### After it's successfully deployed
 
@@ -288,3 +290,6 @@ You can check the status of the certificate in the Google Cloud Console.
 | <a name="output_managed_ssl_certificate_certificate_id"></a> [managed\_ssl\_certificate\_certificate\_id](#output\_managed\_ssl\_certificate\_certificate\_id) | The unique identifier of the Google Managed SSL certificate |
 | <a name="output_managed_ssl_certificate_expire_time"></a> [managed\_ssl\_certificate\_expire\_time](#output\_managed\_ssl\_certificate\_expire\_time) | Expire time of the Google Managed SSL certificate |
 <!-- END_TF_DOCS -->
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Frunatlantis%2Fterraform-gce-atlantis.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Frunatlantis%2Fterraform-gce-atlantis?ref=badge_large)
