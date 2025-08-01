@@ -237,7 +237,7 @@ resource "google_compute_disk" "persistent" {
       kms_key_self_link = var.disk_kms_key_self_link
     }
   }
-
+  project = var.project
 }
 
 resource "google_compute_health_check" "default" {
