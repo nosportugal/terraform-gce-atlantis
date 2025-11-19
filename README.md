@@ -32,6 +32,7 @@ This Terraform module deploys various resources to run Atlantis on Google Comput
   - [Resources](#resources)
   - [Inputs](#inputs)
   - [Outputs](#outputs)
+  - [License](#license)
 
 ## Feature highlights
 
@@ -210,9 +211,7 @@ You can check the status of the certificate in the Google Cloud Console.
 
 ## Modules
 
-| Name | Source | Version |
-|------|--------|---------|
-| <a name="module_container"></a> [container](#module\_container) | terraform-google-modules/container-vm/google | ~> 3.2 |
+No modules.
 
 ## Resources
 
@@ -242,10 +241,10 @@ You can check the status of the certificate in the Google Cloud Console.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_args"></a> [args](#input\_args) | Arguments to override the container image default command (CMD). | `list(string)` | `null` | no |
+| <a name="input_args"></a> [args](#input\_args) | Arguments to override the container image default command (CMD). | `list(string)` | `[]` | no |
 | <a name="input_autoscaling"></a> [autoscaling](#input\_autoscaling) | Allow the instance group to scale down to zero based on signals | <pre>object({<br/>    schedules = list(object({<br/>      name         = string<br/>      description  = string<br/>      schedule     = string<br/>      time_zone    = string<br/>      duration_sec = number<br/>    }))<br/>  })</pre> | `null` | no |
 | <a name="input_block_project_ssh_keys_enabled"></a> [block\_project\_ssh\_keys\_enabled](#input\_block\_project\_ssh\_keys\_enabled) | Blocks the use of project-wide publich SSH keys | `bool` | `false` | no |
-| <a name="input_command"></a> [command](#input\_command) | Command to override the container image ENTRYPOINT | `list(string)` | `null` | no |
+| <a name="input_command"></a> [command](#input\_command) | Command to override the container image ENTRYPOINT | `list(string)` | `[]` | no |
 | <a name="input_default_backend_security_policy"></a> [default\_backend\_security\_policy](#input\_default\_backend\_security\_policy) | Name of the security policy to apply to the default backend service | `string` | `null` | no |
 | <a name="input_disk_kms_key_self_link"></a> [disk\_kms\_key\_self\_link](#input\_disk\_kms\_key\_self\_link) | The self link of the encryption key that is stored in Google Cloud KMS | `string` | `null` | no |
 | <a name="input_domain"></a> [domain](#input\_domain) | Domain to associate Atlantis with and to request a managed SSL certificate for. Without `https://` | `string` | n/a | yes |
