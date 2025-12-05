@@ -49,9 +49,9 @@ data "cloudinit_config" "config" {
     content = yamlencode({
       bootcmd = [
         # Format disk if not already formatted
-        "blkid /dev/disk/by-id/google-${local.atlantis_persistent_disk_name} || mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/disk/by-id/google-${local.atlantis_persistent_disk_name}",
+        "/sbin/blkid /dev/disk/by-id/google-${local.atlantis_persistent_disk_name} --probe --match-types ext4 || mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/disk/by-id/google-${local.atlantis_persistent_disk_name}",
         # Check and repair filesystem
-        "fsck.ext4 -tvy /dev/disk/by-id/google-${local.atlantis_persistent_disk_name}",
+        "/sbin/fsck.ext4 -tvy /dev/disk/by-id/google-${local.atlantis_persistent_disk_name}",
         # Create mount point and mount the disk
         "mkdir -p ${local.atlantis_disk_mount_path}",
         "mount -t ext4 -o discard,defaults /dev/disk/by-id/google-${local.atlantis_persistent_disk_name} ${local.atlantis_disk_mount_path}"
