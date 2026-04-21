@@ -270,8 +270,7 @@ resource "google_compute_health_check" "default" {
 resource "google_compute_health_check" "default_instance_group_manager" {
   name                = "${var.name}-mig"
   healthy_threshold   = 1
-  unhealthy_threshold = 10 
-  timeout_sec         = 5
+  unhealthy_threshold = 10
 
   http_health_check {
     port         = local.atlantis_port
@@ -302,7 +301,7 @@ resource "google_compute_instance_group_manager" "default" {
 
   auto_healing_policies {
     health_check      = google_compute_health_check.default_instance_group_manager.id
-    initial_delay_sec = 90
+    initial_delay_sec = 30
   }
 
   # We cannot set target_size when using an autoscaler
