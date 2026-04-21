@@ -270,8 +270,8 @@ resource "google_compute_health_check" "default" {
 resource "google_compute_health_check" "default_instance_group_manager" {
   name                = "${var.name}-mig"
   healthy_threshold   = 1
-  unhealthy_threshold = 20
-  timeout_sec         = 5
+  unhealthy_threshold = 10
+  timeout_sec         = 2
 
   http_health_check {
     port         = local.atlantis_port
